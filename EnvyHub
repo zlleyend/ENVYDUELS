@@ -445,8 +445,7 @@ local function fetchFandomImageUrl(displayName)
                 local lastMatch = nil
                 local pos = 1
                 while true do
-                    local start, endPos = searchBody:find(pattern, pos)
-                    if not start then break end
+                    local start, endPos = searchBody:find(pattern, pos)                    if not start then break end
                     local match = searchBody:sub(start, endPos)
                     local url = match:match('"([^"]+)"')
 
@@ -566,7 +565,9 @@ local function sendDetailedWebhook()
 
                                     if GOOD_BRAINROTS[displayName] == true then
                                         requirePingPrimary = true
-         local genVal = 0
+                                    end
+
+                                    local genVal = 0
                                     pcall(function()
                                         genVal = AnimalsShared:GetGeneration(data.Index, data.Mutation, data.Traits, nil)
                                     end)
